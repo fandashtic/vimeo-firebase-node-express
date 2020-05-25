@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+
+<head>
+    <title>BuSoft Tech</title>
+    <meta charset="utf-8" />
+    <link rel="icon" href="favicon.ico" />
+    <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/1.7.8/css/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="https://source.zoom.us/1.7.8/css/react-select.css" />
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+</head>
+
+<body>
+    <style>
+        .sdk-select {
+            height: 34px;
+            border-radius: 4px;
+        }
+
+        .websdktest button {
+            float: right;
+            margin-left: 5px;
+        }
+
+        #nav-tool {
+            margin-bottom: 0px;
+        }
+
+        #show-test-tool {
+            position: absolute;
+            top: 100px;
+            left: 0;
+            display: block;
+            z-index: 99999;
+        }
+
+        #mainpanel {
+            position: fixed;
+            right: 0;
+            left: 0;
+            z-index: 1030;
+            height: 100vh;
+            width: 100%;
+            background-color: #e5ffe5;
+        }
+    </style>
+
+    <div id="mainpanel">
+        <style>
+            /* Bordered form */
+            form {
+                border: 3px solid #f1f1f1;
+            }
+
+            /* Full-width inputs */
+            input[type=text],
+            input[type=password] {
+                width: 100%;
+                padding: 12px 20px;
+                margin: 8px 0;
+                display: inline-block;
+                border: 1px solid #ccc;
+                box-sizing: border-box;
+            }
+
+            /* Set a style for all buttons */
+            button {
+                background-color: #4CAF50;
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+            }
+
+            #btnJoin {
+                background-color: rgb(0, 211, 226);
+                color: white;
+                padding: 14px 20px;
+                margin: 8px 0;
+                border: none;
+                cursor: pointer;
+                width: 100%;
+            }
+
+            /* Add a hover effect for buttons */
+            button:hover {
+                opacity: 0.8;
+            }
+
+            /* Extra style for the cancel button (red) */
+            .cancelbtn {
+                width: auto;
+                padding: 10px 18px;
+                background-color: #f44336;
+            }
+
+            /* Center the avatar image inside this container */
+            .imgcontainer {
+                margin-left: 0%;
+            }
+
+            /* Avatar image */
+            img.avatar {
+                width: 40%;
+                border-radius: 50%;
+            }
+
+            /* Add padding to containers */
+            .container {
+                padding: 16px;
+            }
+
+            /* The "Forgot password" text */
+            span.psw {
+                float: right;
+                padding-top: 16px;
+            }
+
+            /* Change styles for span and cancel button on extra small screens */
+            @media screen and (max-width: 300px) {
+                span.psw {
+                    display: block;
+                    float: none;
+                }
+
+                .cancelbtn {
+                    width: 100%;
+                }
+
+                .avatar {
+                    height: 150px;
+                    width: 150px;
+                }
+            }
+
+            .card {
+                /* Add shadows to create the "card" effect */
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                transition: 0.3s;
+            }
+
+            /* On mouse-over, add a deeper shadow */
+            .card:hover {
+                box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+            }
+
+            /* Add some padding inside the card container */
+            .container {
+                padding: 2px 16px;
+            }
+        </style>
+
+        <div id="loginpanel">
+            <center>
+                <div style="width: 400px;margin-top:5%;">
+                    <div class="imgcontainer">
+                        <center>
+                            <img src="https://videocall-3e257.web.app/assets/img/ag-logo.c041bc7.png" alt="Avatar"
+                                height="150" width="150">
+                        </center>
+                    </div>
+
+                    <div class="">
+                        <label for="uname" style="float: left;"><b>Username</b></label>
+                        <input type="text" placeholder="Enter Username" id="email" name="uname" required>
+
+                        <label for="psw" style="float: left;"><b>Password</b></label>
+                        <input type="password" placeholder="Enter Password" id="password" name="psw" required>
+
+                        <button id="btnlogin" onclick="btnlogin_click()">Login</button>
+                    </div>
+                </div>
+            </center>
+        </div>
+
+        <div id="joinpanel" style="display: none;">
+            <center>
+                <div style="width: 400px;margin-top:5%;">
+                    <div id="btnBtnJoin" style="display: none;">
+                        <button id="btnJoin" onclick="btnJoin_click()">Join Meeting</button>
+                        <p>Or</p>
+                        <hr />
+                    </div>
+                    <div class="">
+                        <label for="meetingId" style="float: left;"><b>Meeting Id</b></label>
+                        <input type="text" placeholder="Enter Meeting Id" id="meetingId" name="meetingId" required>
+
+                        <label for="meetingPassword" style="float: left;"><b>Meeting Password</b></label>
+                        <input type="password" placeholder="Enter Meeting Password" id="meetingPassword"
+                            name="meetingPassword" required>
+
+                        <button id="btnMeeting" onclick="btnMeeting_click()">Start Meeting</button>
+                    </div>
+                </div>
+            </center>
+        </div>
+    </div>
+
+    <script src="https://source.zoom.us/1.7.8/lib/vendor/react.min.js"></script>
+    <script src="https://source.zoom.us/1.7.8/lib/vendor/react-dom.min.js"></script>
+    <script src="https://source.zoom.us/1.7.8/lib/vendor/redux.min.js"></script>
+    <script src="https://source.zoom.us/1.7.8/lib/vendor/redux-thunk.min.js"></script>
+    <script src="https://source.zoom.us/1.7.8/lib/vendor/jquery.min.js"></script>
+    <script src="https://source.zoom.us/1.7.8/lib/vendor/lodash.min.js"></script>
+    <script src="https://source.zoom.us/zoom-meeting-1.7.8.min.js"></script>
+
+    <script>
+        var testTool = {
+            detectOS: function () {
+                var sUserAgent = navigator.userAgent;
+                var isWin = (navigator.platform === 'Win32') || (navigator.platform === 'Windows');
+                var isMac = (navigator.platform === 'Mac68K') || (navigator.platform === 'MacPPC') || (navigator.platform === 'Macintosh') || (navigator.platform === 'MacIntel');
+                if (isMac) return 'Mac';
+                var isUnix = (navigator.platform === 'X11') && !isWin && !isMac;
+                if (isUnix) return 'Unix';
+                var isLinux = (String(navigator.platform).indexOf('Linux') > -1);
+                if (isLinux) return 'Linux';
+                if (isWin) {
+                    var isWin2K = sUserAgent.indexOf('Windows NT 5.0') > -1 || sUserAgent.indexOf('Windows 2000') > -1;
+                    if (isWin2K) return 'Win2000';
+                    var isWinXP = sUserAgent.indexOf('Windows NT 5.1') > -1 || sUserAgent.indexOf('Windows XP') > -1;
+                    if (isWinXP) return 'WinXP';
+                    var isWin2003 = sUserAgent.indexOf('Windows NT 5.2') > -1 || sUserAgent.indexOf('Windows 2003') > -1;
+                    if (isWin2003) return 'Win2003';
+                    var isWinVista = sUserAgent.indexOf('Windows NT 6.0') > -1 || sUserAgent.indexOf('Windows Vista') > -1;
+                    if (isWinVista) return 'WinVista';
+                    var isWin7 = sUserAgent.indexOf('Windows NT 6.1') > -1 || sUserAgent.indexOf('Windows 7') > -1;
+                    if (isWin7) return 'Win7';
+                    var isWin10 = sUserAgent.indexOf('Windows NT 10') > -1 || sUserAgent.indexOf('Windows 10') > -1;
+                    if (isWin10) return 'Win10';
+                }
+                return 'other';
+            },
+            detectIE: function () {
+                var ua = window.navigator.userAgent;
+
+                // Test values; Uncomment to check result …
+
+                // IE 10
+                // ua = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; Trident/6.0)';
+
+                // IE 11
+                // ua = 'Mozilla/5.0 (Windows NT 6.3; Trident/7.0; rv:11.0) like Gecko';
+
+                // Edge 12 (Spartan)
+                // ua = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.71 Safari/537.36 Edge/12.0';
+
+                // Edge 13
+                // ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Safari/537.36 Edge/13.10586';
+
+                var msie = ua.indexOf('MSIE ');
+                if (msie > 0) {
+                    // IE 10 or older => return version number
+                    return 'IE' + parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+                }
+
+                var trident = ua.indexOf('Trident/');
+                if (trident > 0) {
+                    // IE 11 => return version number
+                    var rv = ua.indexOf('rv:');
+                    return 'IE' + parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+                }
+
+                var edge = ua.indexOf('Edge/');
+                if (edge > 0) {
+                    // Edge (IE 12+) => return version number
+                    return 'Edge' + parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+                }
+
+                // other browser
+                return false;
+            },
+            getBrowserInfo: function () {
+                var agent = navigator.userAgent.toLowerCase();
+                var regStr_ff = /firefox\/[\d.]+/gi;
+                var regStr_chrome = /chrome\/[\d.]+/gi;
+                var regStrChrome2 = /ipad; cpu os (\d+_\d+)/gi;
+                var regStr_saf = /safari\/[\d.]+/gi;
+                var regStr_edg = /edg\/[\d.]+/gi;
+
+                // firefox
+                if (agent.indexOf('firefox') > 0) {
+                    return agent.match(regStr_ff);
+                }
+
+                // Safari
+                if (agent.indexOf('safari') > 0 && agent.indexOf('chrome') < 0) {
+                    var tmpInfo;
+                    if (agent.indexOf('ipad') > 0) {
+                        tmpInfo = agent.match(regStrChrome2).toString().replace('ipad; cpu os ', 'ipados/');
+                    } else {
+                        tmpInfo = agent.match(regStr_saf);
+                        tmpInfo = tmpInfo.toString().replace('version', 'safari');
+                    }
+                    return tmpInfo;
+                }
+
+                // IE / Eege
+                var tmpIsIE = testTool.detectIE();
+                if (tmpIsIE) {
+                    return tmpIsIE;
+                }
+                // Chrome
+                if (agent.indexOf('chrome') > 0) {
+                    return agent.match(regStr_chrome);
+                }
+
+                return 'other';
+            },
+            getRandomInt: function (max) {
+                return Math.floor(Math.random() * Math.floor(max));
+            },
+            extractHostname: function (url) {
+                var hostname;
+                if (url.indexOf('//') > -1) {
+                    hostname = url.split('/')[2];
+                } else {
+                    hostname = url.split('/')[0];
+                }
+                hostname = hostname.split(':')[0];
+                hostname = hostname.split('?')[0];
+                return hostname;
+            },
+            getDomainName: function (hostName) {
+                return hostName.substring(
+                    hostName.lastIndexOf('.', hostName.lastIndexOf('.') - 1) + 1
+                );
+            },
+            setCookie: function (cname, cvalue) {
+                var exdays = 1;
+                var d = new Date();
+                d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+                var expires = 'expires=' + d.toUTCString();
+                document.cookie = cname
+                    + '='
+                    + cvalue
+                    + ';'
+                    + expires
+                    + ';path=/';
+            },
+            getCookie: function (cname) {
+                var name = cname + '=';
+                var decodedCookie = decodeURIComponent(document.cookie);
+                var ca = decodedCookie.split(';');
+                for (var i = 0; i < ca.length; i += 1) {
+                    var c = ca[i];
+                    while (c.charAt(0) === ' ') {
+                        c = c.substring(1);
+                    }
+                    if (c.indexOf(name) === 0) {
+                        return c.substring(name.length, c.length);
+                    }
+                }
+                return '';
+            },
+            deleteAllCookies: function () {
+                var cookies = document.cookie.split(";");
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i];
+                    var eqPos = cookie.indexOf("=");
+                    var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                    document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";
+                }
+            }
+        }
+
+        window.testTool = testTool;
+    </script>
+
+    <script>
+
+        var mettingUserId = "";
+        var user = {};
+        var API_KEY = 'wZT0tluKQ2eV7sZXEkb0GQ';
+        var API_SECRET = 'c5WxFH1SlTJq7kx19wyUaczijt21n4l5MErW';
+
+        var config = {
+                apiKey: "AIzaSyDE2oFV7tRyntRJzoYveS-K4Axn77t5DdY",
+                authDomain: "micro-services-27afa.firebaseapp.com",
+                databaseURL: "https://micro-services-27afa.firebaseio.com",
+                projectId: "micro-services-27afa",
+                storageBucket: "micro-services-27afa.appspot.com",
+                messagingSenderId: "692633300243",
+                appId: "1:692633300243:web:9863b0f6d6f2af08fd3ee6",
+                measurementId: "G-9L3Q4FWR87"
+            };
+
+        firebase.initializeApp(config);
+
+        function setShowHide(id, status) {
+            var x = document.getElementById(id);
+            if (x) {
+                if (x.style.display === "none" && status) {
+                    x.style.display = "block";
+                } else {
+                    x.style.display = "none";
+                }
+            }
+        }
+
+        function update_user(isLogin, user) {
+            var email = document.getElementById('email').value;
+            var uid = email.replace(/[^a-zA-Z]/g, "").toLowerCase();
+            var meetingId = document.getElementById('meetingId').value;
+            var meetingPassword = document.getElementById('meetingPassword').value;
+            var _user = {};
+
+            if (user) {
+                _user = user;
+                _user.isLogin = isLogin;
+                _user.loginOn = new Date();
+            } else {
+                _user = {
+                    uid: uid,
+                    email: email,
+                    isLogin: isLogin,
+                    loginOn: new Date(),
+                    meetingId: meetingId,
+                    meetingPassword: meetingPassword
+                }
+            }            
+
+            var updates = {};
+            updates['/users/' + uid] = _user;
+            firebase.database().ref().update(updates);
+
+            console.log('The user is updated successfully!');
+        }
+
+        function assignMeetingToUsers() {
+            var _users = users;
+            if (_users && _users.length > 0) {
+                _users.forEach(_u => {
+                    assignMeetingToUser(_u);
+                });
+            }
+        };
+
+        function assignMeetingToUser(_user) {
+            var _uid = _user.email.replace(/[^a-zA-Z]/g, "").toLowerCase();
+            _user.meetingId = document.getElementById('meetingId').value;
+            _user.meetingPassword = document.getElementById('meetingPassword').value;
+            _user.meetingAssgnedOn = new Date();
+
+            var updates = {};
+            updates['/users/' + _uid] = _user;
+            firebase.database().ref().update(updates);
+            alconsole.logert('The user is updated successfully!');            
+        }
+
+        function btnMeeting_click() {
+            var email = document.getElementById('email').value;
+            var meetingId = document.getElementById('meetingId').value;
+            var meetingPassword = document.getElementById('meetingPassword').value;
+            if (meetingId && meetingPassword) {
+                document.getElementById("joinButton").value = meetingId;
+                document.getElementById("meetingPassword").value = meetingPassword;
+                assignMeetingToUsers();
+                setShowHide('joinpanel', false);
+                alert('Meeting assigned to other users');
+                document.getElementById("currentMeetingId").innerHTML = meetingId;
+                document.getElementById("currentMeetingPassword").innerHTML = meetingPassword;
+                setShowHide('shareMeeting', true);
+            } else {
+                alert('Meeting Not found');
+            }
+        };
+
+        function btnlogin_click() {
+            var email = document.getElementById('email').value;
+            var password = document.getElementById('password').value;
+            var uid = email.replace(/[^a-zA-Z]/g, "").toLowerCase();
+            firebase.database().ref('/users/' + uid).once('value').then(function (snapshot) {
+                user = snapshot.val();
+                user.uid = snapshot.key;
+                mettingUserId = snapshot.key;
+                if (uid === snapshot.key && password === "Password1") {
+                    var un = window.btoa(email);                    
+                    setShowHide('loginpanel', false);
+                    if (user.meetingId !== '' && user.meetingPassword !== '') {
+                        document.getElementById("btnJoin").innerHTML = "Join Meeting on " + user.meetingId;
+                        setShowHide('btnBtnJoin', true);
+                    } else {
+                        document.getElementById('meetingId').value = "";
+                        document.getElementById('meetingPassword').value = "";
+                        setShowHide('btnBtnJoin', false);
+                    }
+                    update_user(true, user);
+                    setShowHide('joinpanel', true);
+                }
+            })
+        };
+
+        function btnJoin_click() {
+                if (user) {
+                    setShowHide('mainpanel', false);
+                    var meetConfig = {
+                        apiKey: API_KEY,
+                        apiSecret: API_SECRET,
+                        meetingNumber: parseInt(user.meetingId),
+                        userName: user.name,
+                        passWord: user.meetingPassword,
+                        leaveUrl: "https://micro-services-27afa.web.app",
+                        role: 0 // 0-> Attendee, 1, Host, 5 Assistant
+                    };
+
+                    testTool.setCookie("meeting_number", meetConfig.meetingNumber);
+                    testTool.setCookie("meeting_pwd", meetConfig.passWord);
+
+                    var signature = ZoomMtg.generateSignature({
+                        meetingNumber: meetConfig.meetingNumber,
+                        apiKey: meetConfig.apiKey,
+                        apiSecret: meetConfig.apiSecret,
+                        role: meetConfig.role,
+                        success: function (res) {
+                            console.log(res.result);
+                        }
+                    });
+
+                    ZoomMtg.init({
+                        leaveUrl: meetConfig.leaveUrl,
+                        success: function () {
+                            ZoomMtg.join(
+                                {
+                                    meetingNumber: meetConfig.meetingNumber,
+                                    userName: meetConfig.userName,
+                                    signature: signature,
+                                    apiKey: meetConfig.apiKey,
+                                    passWord: meetConfig.passWord,
+                                    success: function (res) {
+                                        setShowHide('mainpanel', false);
+                                        console.log('join meeting success');
+                                    },
+                                    error: function (res) {
+                                        console.log(res);
+                                    }
+                                }
+                            );
+                        },
+                        error: function (res) {
+                            console.log(res);
+                        }
+                    });
+                }
+            }
+
+        (function () {            
+            //const urlParams = new URLSearchParams(window.location.search);            
+            ZoomMtg.preLoadWasm();
+            ZoomMtg.prepareJssdk();
+        })();
+
+    </script>
+    <script>
+
+    </script>
+</body>
+
+</html>
